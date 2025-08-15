@@ -1,0 +1,108 @@
+<p-dataView *ngIf="listRanking.length > 0" #dv [value]="listRanking" [paginator]="true" [rows]="20"
+  [emptyMessage]="emptyMessage" filterBy="nome" [sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
+
+  <ng-template pTemplate="header">
+    <div class="flex flex-column md:flex-row md:justify-content-between gap-2">
+      <p-dropdown [options]="sortOptions" placeholder="FILTRA POR PONTUAÇÃO"
+        (onChange)="onSortChange($event)"></p-dropdown>
+
+      <span class="p-input-icon-left">
+        <p-calendar [style]="{width: '20rem'}" [showTime]="false" [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [showButtonBar]="true"
+          (onClose)="onClose()" (onClearClick)="onClearClick()"
+          dateFormat="dd/mm/yy" [showIcon]="true">
+        </p-calendar>
+      </span>
+      <span class="p-input-icon-left">
+        <div class="p-inputgroup">
+          <input type="search" pInputText placeholder="BUSCAR POR NOME" (input)="onFilter(dv, $event)">
+          <button type="button" pButton pRipple><i class="pi pi-search"></i></button>
+        </div>
+
+      </span>
+      <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+    </div>
+  </ng-template>
+
+  <ng-template let-item pTemplate="listItem">
+    <div class="col-12">
+      <div class="flex flex-column md:flex-row align-items-center p-3 w-full">
+        <!--<img [src]="item.image" [alt]="item.nome_guerra" class="my-4 md:my-0 w-9 md:w-10rem shadow-2 mr-5" />-->
+        <div class="flex-1 flex flex-column align-items-left text-center md:text-left">
+          <div class="font-bold text-2xl">{{item.str_graduacao}} {{item.str_quadro}} {{item.nome_guerra}}</div>
+          <div class="mb-2">{{item.nome}}</div>
+          <div class="flex align-items-center mt-2">
+            <span class="card-table-ranking-badge status-top"><i class="pi pi-bookmark mr-2"></i>{{listRanking |
+              indexOf:item}} COLOCADO</span>
+          </div>
+        </div>
+        <div
+          class="flex flex-row md:flex-column justify-content-between w-full md:w-auto align-items-center md:align-items-end mt-5 md:mt-0">
+          <span class="text-4xl font-semibold mb-2 align-self-center md:align-self-end">{{item.sum}} <small
+              style="font-size: 10px;" class="text-1xl font-semibold">PONTO(S)</small></span>
+              <button pButton pRipple
+              (click)="setSelectRanking(item)">
+              <span class="text-4xl font-semibold mb-2 align-self-center md:align-self-end">{{item.count}} <small
+                style="font-size: 10px;" class="text-1xl font-semibold">REGISTRO(S)</small></span>
+            </button>
+
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template let-item pTemplate="gridItem">
+    <div class="col-12 md:col-3">
+      <div class="card m-3 border-1 surface-border">
+        <div class="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
+          <div class="flex align-items-center">
+            <span class="card-table-ranking-badge status-top"><i class="pi pi-bookmark mr-2"></i>{{listRanking |
+              indexOf:item}}</span>
+          </div>
+        </div>
+        <div class="flex flex-column align-items-center text-center mb-3">
+          <!--<img style="width: 15rem; height: 15rem;" [src]="item.image" [alt]="item.nome_guerra"
+            class="my-4 md:my-0 w-9 md:w-10rem shadow-2 mr-4" />-->
+          <div class="text-2xl font-bold">{{item.str_graduacao}} {{item.str_quadro}} {{item.nome_guerra}}</div>
+          <div class="mb-3">{{item.nome}}</div>
+        </div>
+        <div class="flex align-items-center justify-content-between">
+          <span class="text-4xl font-bold">{{item.sum}} <small style="font-size: 10px;"
+              class="text-1xl font-semibold">PONTO(S)</small></span>
+              <button pButton pRipple
+              (click)="setSelectRanking(item)">
+              <span class="text-4xl font-semibold mb-2 align-self-center md:align-self-end">{{item.count}} <small
+                style="font-size: 10px;" class="text-1xl font-semibold">REGISTRO(S)</small></span>
+            </button>
+          <!--<p-button icon="pi pi-shopping-cart" [disabled]="listRanking.inventoryStatus === 'OUTOFSTOCK'"></p-button>-->
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</p-dataView>
+
+<div *ngIf="listRanking.length == 0" class="exception-body min-h-screen light">
+  <div
+    class="exception-container  min-h-screen flex align-items-center justify-content-center flex-column bg-auto md:bg-contain bg-no-repeat"
+    style="box-sizing: border-box;background:var(--exception-pages-image);background-repeat: no-repeat; background-size: contain;">
+    <div class="exception-panel text-center flex align-items-center justify-content-center flex-column"
+      style="margin-top: -200px;box-sizing: border-box;">
+      <h1 *ngIf="!loading" class="text-blue-500 mb-0"
+        style="font-size: 100px; font-weight: 900;text-shadow: 0px 0px 50px rgba(#0F8BFD, 0.2);">404</h1>
+      <h3 *ngIf="!loading" class="text-blue-700" style=" font-size: 40px;
+font-weight: 900;
+margin-top: -40px;
+margin-bottom: 50px;">NADA ENCONTRADO</h3>
+
+      <h3 *ngIf="loading" class="text-blue-700" style=" font-size: 30px;
+font-weight: 900;
+margin-top: -90px;
+margin-bottom: 50px;">BUSCANDO...</h3>
+
+      <p *ngIf="!loading" class="text-2xl" style="max-width: 320px;">INSIRA ABAIXO NOVO PERÍODO</p>
+      <p-calendar [style]="{width: '20rem'}"  [showTime]="true" *ngIf="!loading" [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true"
+        [showButtonBar]="true" (onClose)="onClose()" (onClearClick)="onClearClick()" [minDate]="minDate"
+        [maxDate]="maxDate" dateFormat="dd/mm/yy" [showIcon]="true">
+      </p-calendar>
+    </div>
+  </div>
+</div>

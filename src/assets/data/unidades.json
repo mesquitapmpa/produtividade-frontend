@@ -1,0 +1,15 @@
+{
+    "data": [
+      { "name": "32º BPM/1ªCIA/SEDE", "code": "1" },
+      { "name": "32º BPM/65º PEL MOCAJUBA", "code": "2" },
+      { "name": "32º BPM/67º PEL OEIRAS DO PARÁ", "code": "3" },
+      { "name": "32º BPM/68º PEL LIMOEIRO DO AJURU", "code": "4" },
+      { "name": "32º BPM/93º PEL BAIÃO", "code": "5" },
+      { "name": "32º BPM/96º PPD VILA DE CURUÇAMBABA", "code": "6" },
+      { "name": "32º BPM/97º PPD VILA DE CARAPAJÓ", "code": "7" },
+      { "name": "32º BPM/98º PPD VILA DE PORTO GRANDE", "code": "8" },
+      { "name": "32º BPM/99º PPD VILA JUABA", "code": "9" },
+      { "name": "32º BPM/100º PPD VILA DO CARMO", "code": "10" },
+      { "name": "32º BPM/127º PPD VILA DE ITUQUARA", "code": "11" }
+    ]
+}

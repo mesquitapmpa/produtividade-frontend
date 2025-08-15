@@ -1,0 +1,32 @@
+<div class="grid p-fluid">
+  <div class="col-12">
+    <div class="card">
+      <p-galleria #galleria [value]="fileUploads" [(activeIndex)]="activeIndex" [numVisible]="5"
+        [showThumbnails]="showThumbnails!" [showItemNavigators]="true"
+        [circular]="true"
+        [containerStyle]="{'width':'60vw', 'margin': 'auto'}" [containerClass]="galleriaClass()">
+        <ng-template pTemplate="item" let-item>
+          <img [src]="'https://vps49464.publiccloud.com.br/'+item?.url"
+            [ngStyle]="{ width: !fullscreen ? '100%' : '70%', display: !fullscreen ? 'block' : '' }" />
+        </ng-template>
+        <ng-template pTemplate="thumbnail" let-item>
+          <div class="grid grid-nogutter justify-content-center">
+            <img [src]="'https://vps49464.publiccloud.com.br/'+item?.url" style="height: 5rem;" />
+          </div>
+        </ng-template>
+        <ng-template pTemplate="footer" let-item>
+          <div class="custom-galleria-footer">
+            <button type="button" pButton icon="pi pi-list" (click)="onThumbnailButtonClick()"></button>
+            <span *ngIf="fileUploads.length > 0" class="title-container">
+              <span>{{ activeIndex + 1 }}/{{ fileUploads.length }}</span>
+              <span class="title">{{ fileUploads[activeIndex].name }}</span>
+              <span>{{ fileUploads[activeIndex].code }}</span>
+            </span>
+            <button type="button" pButton [icon]="fullScreenIcon()" (click)="toggleFullScreen()"
+              class="fullscreen-button"></button>
+          </div>
+        </ng-template>
+      </p-galleria>
+    </div>
+  </div>
+</div>

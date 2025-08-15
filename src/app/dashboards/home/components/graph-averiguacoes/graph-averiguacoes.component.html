@@ -1,0 +1,26 @@
+<div class="card">
+
+  <div class="graph-content grid mt-5">
+    <div style="margin-top: -5rem;" class="col-12 md:col-6">
+      <h2 class="font-medium line-height-5">{{total}}</h2>
+      <div class="font-medium line-height-5">{{title}}</div>
+    </div>
+  </div>
+  <div >
+      <div class="flex justify-content-center">
+          <p-chart [responsive]="true" [type]="tipo" id="chart" [data]="averiguacaoChart" [options]="averiguacaoChartOptions" height="24rem"></p-chart>
+      </div>
+  </div>
+  <div >
+      <ul class="m-0 p-0 border-none outline-none list-none">
+          <li *ngFor="let item of list; let i = index" class="flex justify-content-between align-items-center py-2 border-bottom-1 surface-border">
+              <div class="flex justify-content-between align-items-center">
+                  <div class="w-2rem h-2rem border-round mr-2" [style]="'background-color: var('+colors[i]+');'">
+                  </div>
+                  <span>{{label[i]}}</span>
+              </div>
+              <span>{{list[i]}} {{list | listPercentualOf:item}}%</span>
+          </li>
+      </ul>
+  </div>
+</div>

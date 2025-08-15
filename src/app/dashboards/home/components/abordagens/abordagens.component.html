@@ -1,0 +1,27 @@
+<div class="card widget-visitor-graph">
+  <div class="graph-content grid mt-5">
+    <div style="margin-top: -5rem;" class="col-12 md:col-6">
+      <h2>{{totalabordagens}}</h2>
+      <div class="font-medium line-height-5">{{title}}</div>
+      <p style="width: 20rem;" class="text-color-secondary">
+        {{description}}
+      </p>
+    </div>
+  </div>
+  <div class="graph">
+    <h6 class="mt-4">POR BATALHÃO</h6>
+    <p-chart #chart [type]="tipo" [data]="visitorChart" [options]="chartOptions" id="prod-chart" width="100%" height="50vh"></p-chart>
+  </div>
+  <div *ngIf="action! > 1" >
+    <ul  class="m-0 p-0 border-none outline-none list-none">
+        <li *ngFor="let item of list; let i = index" class="flex justify-content-between align-items-center py-2 border-bottom-1 surface-border">
+            <div class="flex justify-content-between align-items-center">
+                <div class="w-2rem h-2rem border-round mr-2" [style]="'background-color: var('+colors[i]+');'">
+                </div>
+                <span>{{btls[i]}}</span>
+            </div>
+            <span>{{list[i]}} {{list | listPercentualOf:item}}%</span>
+        </li>
+    </ul>
+</div>
+</div>

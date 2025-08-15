@@ -1,0 +1,19 @@
+
+  <h6>Top customers</h6>
+  <p-carousel [value]="customerCarousel" [numVisible]="5" [numScroll]="1" [circular]="false"
+      [responsiveOptions]="carouselResponsiveOptions" indicatorsContentClass="hidden">
+      <ng-template let-customer pTemplate="item">
+          <div class="card mr-4">
+              <div class="customer-item-content text-center">
+                  <div class="mb-1">
+                      <img src="https://sigpol.pm.pa.gov.br/upload/pessoa/1/5/1/1/foto.jpg" />
+                  </div>
+                  <div>
+                      <h6>{{ customer.user }}</h6>
+                      <h6 class="mt-0 mb-3 text-color-secondary">{{ customer.value }}</h6>
+                  </div>
+              </div>
+          </div>
+      </ng-template>
+  </p-carousel>
+

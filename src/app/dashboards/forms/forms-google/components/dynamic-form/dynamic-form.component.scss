@@ -1,0 +1,19 @@
+
+.registro-badge {
+  border-radius: var(--border-radius);
+  padding: 0.25em 0.5rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .3px;
+}
+
+.registro-badge.status-false {
+  background: var(--red-200);
+  color: var(--red-800);
+}
+
+.registro-badge.status-true {
+  background: var(--green-200);
+  color: var(--green-800);
+}

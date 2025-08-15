@@ -1,0 +1,9 @@
+{
+    "data": [
+        {"name": "CAMETÁ", "code": "CAM"},
+        {"name": "MOCAJUBA", "code": "MOC"},
+        {"name": "OEIRAS DO PARÁ", "code": "OEI"},
+        {"name": "LIMOEIRO DO AJURÚ", "code": "LIM"},
+        {"name": "BAIÃO", "code": "BA"}
+    ]
+}

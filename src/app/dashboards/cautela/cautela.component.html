@@ -1,0 +1,149 @@
+<div class="grid" style="height: 80vh;">
+
+  <div class="col-12">
+    <div class="card px-1 py-1">
+      <p-table #dt [value]="cautelas" responsiveLayout="stack" [rows]="20" [globalFilterFields]="[]" [rows]="10"
+        [paginator]="true" [showCurrentPageReport]="true" [loading]="loadingTable"
+        currentPageReportTemplate="Visualizando {first} para {last} de {totalRecords} registros" [rowHover]="true"
+        dataKey="id">
+        <ng-template pTemplate="caption">
+          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <span class="block mt-2 md:mt-0 p-input-icon-left">
+              <button pButton pRipple label="NOVA CAUTELA" icon="pi pi-plus" class="p-button-success mr-2"
+                (click)="openNew()"></button>
+            </span>
+            <span class="block mt-2 md:mt-0 p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
+                class="w-full sm:w-auto" />
+            </span>
+          </div>
+        </ng-template>
+
+
+
+      </p-table>
+
+
+    </div>
+  </div>
+
+  <p-dialog [(visible)]="registroDialog" [maximizable]="true" [style]="{width: '70vw', 'height': '70vw'}"
+    header="NOVA CAUTELA" [modal]="false" class="p-fluid">
+    <ng-template pTemplate="content">
+      <form [formGroup]="formGroup!">
+        <div class="grid p-fluid">
+          <div class="col-12 md:col-12">
+            <h6>CAUTELADOR<small style="color: red"
+                *ngIf="submitted && !this.formGroup?.get('selectedEfetivo')?.value">*CAMPO OBRIGATÓRIO</small></h6>
+            <div class="grid formgrid">
+              <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+                <p-multiSelect [selectionLimit]=1 [options]="sourceEfetivos" formControlName="selectedEfetivo"
+                  optionLabel="nome" placeholder="SELECIONE">
+                  <ng-template let-militar pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                      <!--<p-avatar [image]="militar.image" styleClass="mr-1" size="xlarge" shape="circle"></p-avatar>-->
+                      <div>{{ militar.nome }}</div>
+                  </div>
+              </ng-template>
+                </p-multiSelect>
+              </div>
+            </div>
+            </div>
+            <div class="col-12 md:col-12">
+              <h6>ARMAMENTO PARA CAUTELAR<small style="color: red"
+                  *ngIf="submitted && !this.formGroup?.get('selectedArmamento')?.value">*CAMPO OBRIGATÓRIO</small></h6>
+              <div class="grid formgrid">
+                <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+                  <p-multiSelect [selectionLimit]=1 [options]="sourceArmamento" formControlName="selectedArmamento"
+                    optionLabel="marca.name" placeholder="SELECIONE">
+                    <ng-template let-armamento pTemplate="item">
+                    <div class="flex align-items-center gap-2">
+                        <div>{{armamento.marca.name}}</div>
+                    </div>
+                </ng-template>
+                  </p-multiSelect>
+                </div>
+              </div>
+              </div>
+            <!--<div class="col-12 md:col-6">
+          <h6>MARCA/MODELO<small style="color: red" *ngIf="submitted && !this.formGroup?.get('marca')?.value">*CAMPO OBRIGATÓRIO</small></h6>
+          <div class="grid formgrid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <p-dropdown placeholder="SELECIONE" formControlName="marca" [options]="marcas"
+              [ngClass]="{'ng-invalid ng-dirty' : submitted && !this.formGroup?.get('marca')?.value }"
+                optionLabel="name"></p-dropdown>
+            </div>
+          </div>
+
+          <h6>NºSÉRIE <small style="color: red" *ngIf="submitted && !this.formGroup?.get('nserie')?.value">*CAMPO OBRIGATÓRIO</small></h6>
+          <div class="grid formgrid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <input
+              [ngClass]="{'ng-invalid ng-dirty' : submitted && !this.formGroup?.get('nserie')?.value }"
+              type="text" pInputText formControlName="nserie" />
+            </div>
+          </div>
+
+          <h6>NºRP <small style="color: red" *ngIf="submitted && !this.formGroup?.get('nrp')?.value">*CAMPO OBRIGATÓRIO</small></h6>
+          <div class="grid formgrid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <input
+              [ngClass]="{'ng-invalid ng-dirty' : submitted && !this.formGroup?.get('nrp')?.value }"
+              type="text" pInputText formControlName="nrp" />
+            </div>
+          </div>
+        </div>
+        <div class="col-12 md:col-6">
+          <h6>STATUS<small style="color: red" *ngIf="submitted && !this.formGroup?.get('status')?.value">*CAMPO OBRIGATÓRIO</small></h6>
+          <div class="grid formgrid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <p-dropdown
+              [ngClass]="{'ng-invalid ng-dirty' : submitted && !this.formGroup?.get('status')?.value }"
+              placeholder="SELECIONE" formControlName="status" [options]="status"
+                optionLabel="name"></p-dropdown>
+            </div>
+          </div>
+
+          <h6>UNIDADE<small style="color: red" *ngIf="submitted && !this.formGroup?.get('unidade')?.value">*CAMPO OBRIGATÓRIO</small></h6>
+          <div class="grid formgrid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <p-dropdown
+              [ngClass]="{'ng-invalid ng-dirty' : submitted && !this.formGroup?.get('unidade')?.value }"
+              placeholder="SELECIONE" formControlName="unidade" [options]="unidades"
+                optionLabel="name"></p-dropdown>
+            </div>
+          </div>
+
+          <h6>CARREGADORES <small style="color: red" *ngIf="submitted && !this.formGroup?.get('carregadores')?.value">*CAMPO OBRIGATÓRIO</small>
+          </h6>
+          <div class="grid formgrid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <input
+              [ngClass]="{'ng-invalid ng-dirty' : submitted && !this.formGroup?.get('carregadores')?.value }"
+              type="number" pInputText formControlName="carregadores" />
+            </div>
+          </div>
+        </div>
+        <div class="col-12 md:col-12">
+          <h6>OBSERVAÇÃO</h6>
+          <div class="grid formgrid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <input
+              type="text" pInputText formControlName="obs" />
+            </div>
+          </div>
+        </div>-->
+          </div>
+      </form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <!--<br>
+    <button pButton pRipple label="SAIR" icon="pi pi-times" class="p-button-text" (click)="sairDialog()"></button>
+    <button [loading]="loadingSave" pButton pRipple type="submit" label="SALVAR" icon="pi pi-check" (click)="save()"
+      class="p-button-text"></button>-->
+    </ng-template>
+
+  </p-dialog>
+</div>

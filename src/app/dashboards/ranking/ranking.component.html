@@ -1,0 +1,89 @@
+<div class="grid" style="margin: 1rem;">
+  <div class="col-12">
+    <div class="card" style="margin-top: -1.3rem">
+      <app-card-table [loading]="loading" [listRanking]="ranking" (selectEvent)="selectRanking($event)"
+        (updateEvent)="updateRanking($event)"></app-card-table>
+    </div>
+  </div>
+
+  <p-dialog [(visible)]="sidebarVisible" [maximizable]="true" [style]="{width: '70rem'}" header="REGISTRO(S)"
+    [modal]="true" class="p-fluid">
+    <ng-template pTemplate="header">
+      <div class="font-semibold text-2xl">{{item?.sum}} ponto(s) em {{item?.count}} registro(s)</div>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <div class="col-12">
+        <div class="flex flex-column md:flex-row align-items-center p-3 w-full">
+          <!--<img [src]="item?.image" [alt]="item?.nome_guerra" class="my-4 md:my-0 w-9 md:w-10rem shadow-2 mr-5" />-->
+          <div class="flex-1 flex flex-column align-items-center text-center md:text-left">
+            <div class="font-bold text-2xl">{{item?.str_graduacao}} {{item?.str_quadro}} {{item?.nome_guerra}}</div>
+            <div class="mb-2">{{item?.nome}}</div>
+            <div class="flex align-items-center mt-2">
+              <span class="card-table-ranking-badge status-top font-semibold text-2xl"><i
+                  class="pi pi-bookmark mr-2"></i>{{ranking |
+                indexOf:item}} COLOCADO</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <p-table *ngIf="!loading" styleClass="p-datatable-striped" [value]="registros" [tableStyle]="{ 'min-width': '50rem' }">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>DATA</th>
+              <th>UNIDADE</th>
+              <th>MUNICIPIO</th>
+              <th>OCORRÊNCIA</th>
+              <th>LEGENDA</th>
+              <th>PONTOS</th>
+              <th>RELEVÂNCIA</th>
+              <th>TOTAL</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-registro>
+            <tr>
+              <td>{{ registro.data | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ registro.unidade }}</td>
+              <td>{{ registro.municipio }}</td>
+              <td>{{ registro.nome }}</td>
+              <td>{{ registro.legenda }}</td>
+              <td>{{ registro.pontos }}</td>
+              <td>{{ registro.relevancia }}</td>
+              <td>{{ registro.total }}</td>
+            </tr>
+          </ng-template>
+
+        </p-table>
+        <p-table *ngIf="loading" styleClass="p-datatable-striped" [value]="fakeregistro!" [tableStyle]="{ 'min-width': '50rem' }">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>DATA</th>
+              <th>UNIDADE</th>
+              <th>MUNICIPIO</th>
+              <th>OCORRÊNCIA</th>
+              <th>LEGENDA</th>
+              <th>PONTOS</th>
+              <th>RELEVÂNCIA</th>
+              <th>TOTAL</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-registro>
+            <tr>
+              <td><p-skeleton></p-skeleton></td>
+              <td><p-skeleton></p-skeleton></td>
+              <td><p-skeleton></p-skeleton></td>
+              <td><p-skeleton></p-skeleton></td>
+              <td><p-skeleton></p-skeleton></td>
+              <td><p-skeleton></p-skeleton></td>
+              <td><p-skeleton></p-skeleton></td>
+              <td><p-skeleton></p-skeleton></td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </ng-template>
+    <ng-template style="padding: 5rem;" pTemplate="footer">
+      <button pButton pRipple label="SAIR" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    </ng-template>
+  </p-dialog>
+</div>

@@ -1,0 +1,41 @@
+<div class="layout-container">
+  <div class="layout-content-wrapper">
+    <div class="grid">
+      <div class="col-12" style="padding: 0%;">
+        <p-toast></p-toast>
+        <div class="card px-1 py-1">
+
+          <p-menubar [model]="tieredItems">
+            <ng-template pTemplate="start">
+              <img src="assets/layout/images/app_name.png" height="20" class="mr-2" />
+            </ng-template>
+            <ng-template pTemplate="end">
+              <span class="p-input-icon-right">
+                <button [loading]="loading" pButton pRipple label="Sair com Segurança" icon="pi pi-sign-out"
+                  class="p-button-danger" (click)="handleLogout()"></button>
+              </span>
+            </ng-template>
+          </p-menubar>
+
+          <!--<p-tabMenu  [model]="tieredItems" [activeItem]="activeItem" (activeItemChange)="onActiveItemChange($event)">
+            <ng-template pTemplate="end">
+              <span class="p-input-icon-right">
+                <button [loading]="loading" pButton pRipple label="Sair" icon="pi pi-sign-out" class="p-button-danger"
+                  (click)="handleLogout()"></button>
+              </span>
+            </ng-template>
+          </p-tabMenu>-->
+          <app-breadcrumb></app-breadcrumb>
+        </div>
+      </div>
+    </div>
+    <div class="layout-content" style="margin-top: -2.5rem">
+      <router-outlet></router-outlet>
+      <div *ngIf="isShowingRouteLoadIndicator" class="router-load-indicator">
+        CARREGANDO MÓDULO AGUARDE...
+      </div>
+    </div>
+    <div class="layout-mask"></div>
+  </div>
+  <!-- I indicate that a router module is being loaded asynchronously. -->
+</div>

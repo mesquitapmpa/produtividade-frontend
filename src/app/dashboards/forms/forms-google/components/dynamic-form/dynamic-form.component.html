@@ -1,0 +1,142 @@
+<p-toast  [life]="3000"></p-toast>
+<p-toast [life]="5000" position="bottom-center" key="bc"></p-toast>
+<p-dialog [(visible)]="deleteForm" header="AVISO" [modal]="true" [style]="{width:'350px'}">
+  <div class="flex align-items-center justify-content-left">
+      <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+      <span>Tem certeza de que deseja excluir?</span>
+  </div>
+  <ng-template pTemplate="footer">
+      <button style="background-color: blue; color: white;" pButton pRipple icon="pi pi-times" class="p-button-text" label="NÃO" (click)="deleteForm = false"></button>
+      <button [loading]="loadingDelete" style="background-color: red; color: white;" pButton pRipple icon="pi pi-check" class="p-button-text" label="SIM" (click)="confirmDelete()"></button>
+  </ng-template>
+</p-dialog>
+
+<div class="grid p-fluid" style="height: 80vh;">
+  <div class="col-12 md:col-6">
+    <p-progressBar *ngIf="loadingGetForm" mode="indeterminate"
+      [style]="{ 'height': '2px', 'margin-right': '1rem', 'margin-left': '1rem' }"></p-progressBar>
+    <div class="card relative h-6rem border-round-xl p-3">
+      <!--<p-tabMenu loading="true" [model]="plainMenuItems" [activeItem]="activeItem"
+        (activeItemChange)="onActiveItemChange($event)"></p-tabMenu>-->
+      <p-dropdown (onChange)="onActiveItemChange($event)" [options]="plainMenuItems" optionLabel="label"
+        [filter]="false" filterBy="label" [showClear]="false" placeholder="SELECIONE FORMULÁRIO">
+        <!--<ng-template pTemplate="selectedItem">
+              <div class="flex align-items-center gap-2" *ngIf="selectedCountry">
+                  <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + selectedCountry.code.toLowerCase()" style="width: 18px"/>
+                  <div>{{ selectedCountry.name }}</div>
+              </div>
+          </ng-template>-->
+        <ng-template let-form pTemplate="item">
+          <div class="flex align-items-center gap-2">
+            <!-- <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + country.code.toLowerCase()" style="width: 18px"/>-->
+            <div>{{ form.label }}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+
+    <div style="margin-top: -3.5rem;" *ngIf="dynamicForm" class="col-12 md:col-12">
+      <button pButton pRipple style="width: 15rem;" type="button" label="NOVO FORMULÁRIO" class="p-button-warn"
+        (click)="limparCampos()"></button>
+      <div *ngIf="novo">
+        <form *ngFor="let control of items" [formGroup]="dynamicForm">
+          <div *ngIf="control.itemId != '761d16f9' && control.itemId != '68bb5d0c'" class="col-12 md:col-12">
+            <h6 *ngIf="control.pageBreakItem" style="font-weight: bold; padding: 2rem; text-decoration: underline; color: white; background: black;">{{control.title?.toUpperCase()}} <small
+                style="color: blue">{{control.description}}</small>
+            </h6>
+            <h6 *ngIf="!control.pageBreakItem" style="font-weight: bold;">{{control.title?.toUpperCase()}} <small
+              style="color: blue">{{control.description}}</small>
+          </h6>
+            <div class="grid formgrid">
+              <div class="col-12">
+                <input pInputText
+                  [ngClass]="{'ng-invalid ng-dirty' : submitted && !control.value && control.questionItem?.question?.required }"
+                  *ngIf="control?.questionItem && (control.questionItem | checkifexistform:'textQuestion')"
+                  [type]="checkType(control.questionItem,'textQuestion')" [formControlName]="control.itemId">
+                <p-dropdown
+                  *ngIf="control?.questionItem?.question?.choiceQuestion?.type == 'DROP_DOWN' && (control.questionItem | checkifexistform:'choiceQuestion')"
+                  [formControlName]="control.itemId" [options]="control.questionItem?.question?.choiceQuestion?.options"
+                  [ngClass]="{'ng-invalid ng-dirty' : submitted && !control.value && control.questionItem?.question?.required }"
+                  placeholder="SELECIONE" optionLabel="value">
+                  <ng-template let-option pTemplate="item">
+                    <span>{{option.value}}</span>
+                  </ng-template>
+                </p-dropdown>
+                <!--<div style="margin-top: -3rem;"
+                  *ngIf="control?.questionItem?.question?.choiceQuestion?.type == 'RADIO' && (control.questionItem | checkifexistform:'choiceQuestion')">
+                  <div *ngFor="let category of control?.questionItem?.question?.choiceQuestion?.options"
+                    class="field-checkbox">
+                    <p-radioButton (onClick)="onClickRadio($event)" [value]="category.value" [formControlName]="control.itemId"></p-radioButton>
+                    <label [for]="category.value" class="ml-2">{{ category.value }}</label>
+                  </div>
+                </div>-->
+                <p-calendar [showButtonBar]="true" [readonlyInput]="true" [maxDate]="date" [showIcon]="true"
+                  *ngIf="control?.questionItem && (control.questionItem | checkifexistform:'dateQuestion')"
+                   [ngClass]="{'ng-invalid ng-dirty' : submitted && !control.value && control.questionItem?.question?.required }"
+                  [formControlName]="control.itemId" dateFormat="dd/mm/yy"></p-calendar>
+                <small style="color: red"
+                  *ngIf="submitted && !this.dynamicForm?.get(control.itemId)?.value && control.questionItem?.question?.required == true">*CAMPO
+                  OBRIGATÓRIO</small>
+              </div>
+            </div>
+
+          </div>
+        </form>
+        <p-messages [style]="{'margin-right': '1rem', 'margin-left': '1rem'}" [(value)]="messages" [enableService]="false" [closable]="true"></p-messages>
+        <div class="flex flex-wrap gap-2">
+          <!--<button [disabled]="!this.dynamicForm.valid" style="width: 10rem; margin-left: 1rem;" [loading]="loadingSave"-->
+          <button style="width: 10rem; margin-left: 1rem;" [loading]="loadingSave"
+            pButton pRipple type="button" label="ENVIAR" class="p-button-success" (click)="salvarFormulario()"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 md:col-6">
+    <p-progressBar *ngIf="loadingGetList" mode="indeterminate"
+      [style]="{ 'height': '2px', 'margin-right': '0rem', 'margin-left': '0rem' }"></p-progressBar>
+    <h6>LISTA DE FORMULÁRIOS</h6>
+    <div class="grid">
+      <div class="col-12 md:col-12">
+        <p-dataView *ngIf="formularios" #dv [value]="formularios" emptyMessage="NADA ENCONTRADO" [rows]="10" [paginator]="true">
+          <ng-template let-form pTemplate="listItem" let-i="rowIndex">
+              <div class="col-12">
+              <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
+                <img style="padding: 1rem;"
+                  class="w-9 sm:w-16rem xl:w-12rem shadow-2 block xl:block mx-auto border-round"
+                  src="assets/layout/images/formularios-do-google.png" />
+
+                <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+
+                  <div class="flex flex-column align-items-center sm:align-items-start gap-3">
+                    <!--<div class="text-1xl font-bold text-900">{{ form.info.documentTitle.toUpperCase() }}</div>-->
+                    <div class="flex align-items-center gap-3">
+                      <span class="flex align-items-center gap-2">
+                        <i class="pi pi-tag"></i>
+                        <span class="font-bold">{{ form.key }}</span>
+                      </span>
+                    </div>
+                    <div class="text-1xl font-normal text-900">NOME DO OPERADOR: {{ form.items["1b9ec09e"] }}</div>
+                    <div class="text-1xl font-normal text-900">DATA DO OCORRIDO: {{ form.items["47546d63"] * 1000 |
+                      date:"dd/MM/yyyy"}}</div>
+                    <div class="text-1xl font-normal text-900">UPM: {{ form.items["2d1903ea"].value}}</div>
+                    <div class="text-1xl font-normal text-900">TABELA: {{form.tableRange}}</div>
+                  </div>
+                  <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                    <span class="text-1xl font-bold">REGISTRO EM: {{form.created_at * 1000 | date:"dd/MM/yyyy HH:mm:ss"}}</span>
+                    <span [class]="'registro-badge status-' + form.status.toString().toLowerCase()">{{form.status ?
+                      "ENVIADO" : "PENDENTE"}}</span>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-warning mr-2"
+                      (click)="setActiveForm(form,i)"></button>
+                    <!--<button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger mr-2" (click)="selectFormDelete(i)"></button>-->
+                    <!--<p-button [disabled]="form.status" class="p-button-rounded p-button-info mr-2"  icon="pi pi-send" [loading]="loadingFormulario[i]" loadingIcon="pi pi-spinner" (click)="enviarFormulario(form,i)"></p-button>-->
+                    <!--<button pButton icon="pi pi-shopping-cart" class="md:align-self-end mb-2 p-button-rounded" [disabled]="product.inventoryStatus === 'OUTOFSTOCK'"></button>-->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-dataView>
+      </div>
+    </div>
+  </div>
+</div>

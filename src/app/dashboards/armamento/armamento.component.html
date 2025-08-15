@@ -1,0 +1,189 @@
+<p-toast key="toast1"></p-toast>
+<div class="grid" style="height: 80vh;">
+  <div class="col-12">
+    <div class="card px-1 py-1">
+      <p-table #dt [value]="armamentos" responsiveLayout="stack"
+        [globalFilterFields]="['item','marca.name','nserie', 'nrp', 'carregadores', 'obs', 'status.name']"
+        [rows]="10" [paginator]="true"
+        [showCurrentPageReport]="true"
+        [loading]="loadingTable"
+        currentPageReportTemplate="Visualizando {first} para {last} de {totalRecords} registros"
+        [(selection)]="selectedRegistros" [rowHover]="true" >
+        <ng-template pTemplate="caption">
+          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <span class="block mt-2 md:mt-0 p-input-icon-left">
+              <button pButton pRipple label="NOVO ARMAMENTO" icon="pi pi-plus" class="p-button-success mr-2"
+                (click)="openNew()"></button>
+
+            </span>
+            <span class="block mt-2 md:mt-0 p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Buscar..."
+              class="w-full sm:w-auto" />
+          </span>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>ITEM</th>
+            <th pSortableColumn="marca.name">MARCA/MODELO/CALIBRE <p-sortIcon field="marca"></p-sortIcon></th>
+            <th pSortableColumn="nserie">NºSÉRIE <p-sortIcon field="nserie"></p-sortIcon></th>
+            <th pSortableColumn="nrp">NºRP <p-sortIcon field="nrp"></p-sortIcon></th>
+            <th pSortableColumn="carregadores">CARREGADORES <p-sortIcon field="carregadores"></p-sortIcon></th>
+            <th>OBSERVAÇÃO</th>
+            <th>IMAGENS</th>
+            <th pSortableColumn="status.name">STATUS <p-sortIcon field="status"></p-sortIcon></th>
+            <th>AÇÕES</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-form let-rowIndex="rowIndex">
+          <tr>
+            <td style="width:5%; min-width:5rem;">
+              <span class="p-column-title">ITEM</span>
+              {{rowIndex + 1}}
+            </td>
+            <td style="width:20%; min-width:20rem;">
+              <span class="p-column-title">MARCA/MODELO</span>
+              {{form.marca.name}}
+            </td>
+            <td style="width:15%; min-width:10rem;">
+              <span class="p-column-title">Nº SÉRIE</span>
+              {{form.nserie}}
+            </td>
+            <td style="width:15%; min-width:10rem;">
+              <span class="p-column-title">Nº RP</span>
+              {{form.nrp}}
+            </td>
+            <td style="width:10%; min-width:15rem;">
+              <span class="p-column-title">CARREGADORES</span>
+              {{form.carregadores}}
+            </td>
+            <td style="width:20%; min-width:15rem;">
+              <span class="p-column-title">OBSERVAÇÃO</span>
+              {{form.obs}}
+            </td>
+            <td style="width:10%; min-width:20rem;">
+              <span class="p-column-title">IMAGENS</span>
+              <div class="flex align-items-center justify-content-between flex-column md:flex-row gap-4 md:gap-0">
+                <p-avatarGroup>
+                    <p-avatar size="xlarge" *ngFor="let file of armamentos[rowIndex].imagens | slice:0:2" [image]="'https://vps49464.publiccloud.com.br/'+file.url"  styleClass="border-2 surface-border"></p-avatar>
+                    <p-avatar *ngIf="armamentos[rowIndex].imagens && armamentos[rowIndex].imagens.length > 2" label="+ {{armamentos[rowIndex].imagens.length - 2}}"   [style]="{ 'background-color': '#E73A3A', color: '#ffffff' }"></p-avatar>
+                </p-avatarGroup>
+            </div>
+            </td>
+            <td style="width:10%; min-width:20rem;">
+              <span [class]="'registro-badge status-' + form.status.code.toLowerCase()">{{form.status.name}}</span>
+            </td>
+            <td>
+              <div class="flex">
+                <button pButton pRipple icon="pi pi-images" (click)="uploadImage(form)" class="p-button-rounded p-button-info mr-2"></button>
+                <button pButton pRipple icon="pi pi-pencil" (click)="editRegistro(form)" class="p-button-rounded p-button-warning mr-2"></button>
+                <!--<button pButton pRipple icon="pi pi-trash" (click)="deleteRegistro(registro)" class="p-button-rounded p-button-danger mr-2"></button>-->
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <!-- FORMULÁRIO DE ADICIONAR REGISTRO-->
+  </div>
+</div>
+
+<p-dialog [(visible)]="registroDialog" [maximizable]="true" [style]="{width: '70vw'}" header="NOVO ARMAMENTO"
+  [modal]="false" class="p-fluid">
+  <ng-template pTemplate="content">
+    <form [formGroup]="formGroup!">
+      <div class="grid p-fluid">
+        <div class="col-12 md:col-6">
+          <h6>MARCA/MODELO<small style="color: red" *ngIf="submitted && !this.formGroup?.get('marca')?.value">*CAMPO OBRIGATÓRIO</small></h6>
+          <div class="grid formgrid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <p-dropdown placeholder="SELECIONE" formControlName="marca" [options]="marcas"
+              [ngClass]="{'ng-invalid ng-dirty' : submitted && !this.formGroup?.get('marca')?.value }"
+                optionLabel="name"></p-dropdown>
+            </div>
+          </div>
+
+          <h6>NºSÉRIE <small style="color: red" *ngIf="submitted && !this.formGroup?.get('nserie')?.value">*CAMPO OBRIGATÓRIO</small></h6>
+          <div class="grid formgrid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <input
+              [ngClass]="{'ng-invalid ng-dirty' : submitted && !this.formGroup?.get('nserie')?.value }"
+              type="text" pInputText formControlName="nserie" />
+            </div>
+          </div>
+
+          <h6>NºRP <small style="color: red" *ngIf="submitted && !this.formGroup?.get('nrp')?.value">*CAMPO OBRIGATÓRIO</small></h6>
+          <div class="grid formgrid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <input
+              [ngClass]="{'ng-invalid ng-dirty' : submitted && !this.formGroup?.get('nrp')?.value }"
+              type="text" pInputText formControlName="nrp" />
+            </div>
+          </div>
+        </div>
+        <div class="col-12 md:col-6">
+          <h6>STATUS<small style="color: red" *ngIf="submitted && !this.formGroup?.get('status')?.value">*CAMPO OBRIGATÓRIO</small></h6>
+          <div class="grid formgrid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <p-dropdown
+              [ngClass]="{'ng-invalid ng-dirty' : submitted && !this.formGroup?.get('status')?.value }"
+              placeholder="SELECIONE" formControlName="status" [options]="status"
+                optionLabel="name"></p-dropdown>
+            </div>
+          </div>
+
+          <h6>UNIDADE<small style="color: red" *ngIf="submitted && !this.formGroup?.get('unidade')?.value">*CAMPO OBRIGATÓRIO</small></h6>
+          <div class="grid formgrid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <p-dropdown
+              [ngClass]="{'ng-invalid ng-dirty' : submitted && !this.formGroup?.get('unidade')?.value }"
+              placeholder="SELECIONE" formControlName="unidade" [options]="unidades"
+                optionLabel="name"></p-dropdown>
+            </div>
+          </div>
+
+          <h6>CARREGADORES <small style="color: red" *ngIf="submitted && !this.formGroup?.get('carregadores')?.value">*CAMPO OBRIGATÓRIO</small>
+          </h6>
+          <div class="grid formgrid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <input
+              [ngClass]="{'ng-invalid ng-dirty' : submitted && !this.formGroup?.get('carregadores')?.value }"
+              type="number" pInputText formControlName="carregadores" />
+            </div>
+          </div>
+        </div>
+        <div class="col-12 md:col-12">
+          <h6>OBSERVAÇÃO</h6>
+          <div class="grid formgrid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <input
+              type="text" pInputText formControlName="obs" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <br>
+    <button pButton pRipple label="SAIR" icon="pi pi-times" class="p-button-text" (click)="sairDialog()"></button>
+    <button [loading]="loadingSave" pButton pRipple type="submit" label="SALVAR" icon="pi pi-check" (click)="save()"
+      class="p-button-text"></button>
+  </ng-template>
+
+</p-dialog>
+
+<p-dialog [(visible)]="deleteRegistroDialog" header="AVISO" [modal]="true" [style]="{width:'50vw'}">
+  <div class="flex align-items-center justify-content-left">
+      <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+      <span>{{EXCLUIR_TXT}}</span>
+  </div>
+  <ng-template pTemplate="footer">
+      <button style="background-color: blue; color: white;" pButton pRipple icon="pi pi-times" class="p-button-text" label="NÃO" (click)="deleteRegistroDialog = false"></button>
+      <button [loading]="loadingDelete" style="background-color: red; color: white;" pButton pRipple icon="pi pi-check" class="p-button-text" label="SIM" (click)="confirmDelete()"></button>
+  </ng-template>
+</p-dialog>

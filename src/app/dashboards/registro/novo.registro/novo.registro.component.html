@@ -1,0 +1,162 @@
+<form [formGroup]="formGroup!">
+  <div class="card" style="margin: 1rem;">
+    <span *ngIf="!isDone"  class="block text-700 font-bold text-xl mb-4">CARREGANDO...</span>
+    <span *ngIf="isDone"  class="block text-700 font-bold text-xl mb-4">NOVO REGISTRO</span>
+    <div *ngIf="isDone" class="grid grid-nogutter flex-wrap gap-3 p-fluid">
+      <div class="col-12 lg:col-8">
+        <div class="grid formgrid">
+          <div class="col-12 lg:col-8 field">
+            <h6>OCORRENCIA<small style="color: green" *ngIf="this.formGroup?.get('ocorrencia')?.value"> OK!</small></h6>
+            <div class="grid formgrid">
+              <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+                <p-multiSelect #msocorrencia (onChange)="onChangeMultiSelect($event, 'msocorrencia')" [selectionLimit]=1
+                  [showClear]="false" placeholder="SELECIONE" formControlName="ocorrencia" [showToggleAll]="false"
+                  [options]="selectedParametros"
+
+                  [ngClass]="{'ng-invalid ng-dirty' : !this.formGroup?.get('ocorrencia')?.value }"
+                  optionLabel="nome"></p-multiSelect>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 lg:col-4 field">
+            <h6>DATA/HORA <small style="color: green" *ngIf="this.formGroup?.get('date')?.value"> OK!</small></h6>
+            <p-calendar styleClass="w-full" [showTime]="true" [maxDate]="maxDate" formControlName="date"
+              [readonlyInput]="true" [ngClass]="{'ng-invalid ng-dirty' : !this.formGroup?.get('date')?.value }"
+              [showSeconds]="false" [touchUI]="false" [showIcon]="true"></p-calendar>
+          </div>
+          <div class="col-12 lg:col-6 field">
+            <h6>MUNICIPIO<small style="color: green" *ngIf="this.formGroup?.get('municipio')?.value"> OK!</small></h6>
+            <div class="grid formgrid">
+              <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+                <p-multiSelect #msmunicipio (onChange)="onChangeMultiSelect($event, 'msmunicipio')" [selectionLimit]=1
+                  [showToggleAll]="false" [showClear]="false" placeholder="SELECIONE" formControlName="municipio"
+                  [options]="selectedMunicipio"
+                  [ngClass]="{'ng-invalid ng-dirty' : !this.formGroup?.get('municipio')?.value }"
+                  optionLabel="name"></p-multiSelect>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 lg:col-6 field">
+            <h6>UNIDADE<small style="color: green" *ngIf="this.formGroup?.get('unidade')?.value"> OK!</small></h6>
+            <div class="grid formgrid">
+              <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+                <p-multiSelect #msunidade (onChange)="onChangeMultiSelect($event, 'msunidade')" [selectionLimit]=1
+                  [showClear]="false" [showToggleAll]="false"
+                  [ngClass]="{'ng-invalid ng-dirty' : !this.formGroup?.get('unidade')?.value }" placeholder="SELECIONE"
+                  formControlName="unidade" [options]="selectedUnidade" optionLabel="name"></p-multiSelect>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 lg:col-12 field">
+            <h6>GUARNIÇÃO<small style="color: green" *ngIf="this.formGroup?.get('guarnicao')?.value"> OK!</small></h6>
+            <div class="grid formgrid">
+              <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+                <p-multiSelect #msguarnicao (onChange)="onChangeMultiSelect($event, 'msguarnicao')" [showClear]="false"
+                (onClick)="onClick($event)"
+                  [showToggleAll]="false" placeholder="SELECIONE" formControlName="guarnicao" [options]="militares"
+                  [ngClass]="{'ng-dirty ng-invalid' : !this.formGroup?.get('guarnicao')?.value }"
+                  optionLabel="nome"></p-multiSelect>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 lg:col-12 field">
+            <h6>RELATÓRIO<small style="color: green" *ngIf="this.formGroup?.get('relatorio')?.value"> OK!</small></h6>
+            <p-editor formControlName="relatorio" [style]="{'height':'20.00rem'}">
+              <ng-template pTemplate="header">
+                <span class="ql-formats">
+                  <button type="button" class="ql-bold" aria-label="Bold"></button>
+                  <button type="button" class="ql-italic" aria-label="Italic"></button>
+                  <button type="button" class="ql-underline" aria-label="Underline"></button>
+                </span>
+              </ng-template>
+            </p-editor>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-1 w-full lg:w-3 xl:w-4 flex flex-column row-gap-3">
+        <div class="border-1 surface-border border-round">
+          <span class="text-900 font-bold block border-transparent surface-border p-3">REGISTRO</span>
+          <div class="p-2">
+            <div *ngIf="!registro?.id" class="bg-gray-100 py-2 px-3 flex align-items-center border-round">
+              <span class="text-black-alpha-90 font-bold mr-3">STATUS: NÃO ENVIADO</span>
+            </div>
+            <div *ngIf="registro?.id" class="bg-green-700 py-2 px-3 flex align-items-center border-round">
+              <span class="text-white-alpha-90 font-bold mr-3">INFORMAÇOES: ENVIADO</span>
+            </div>
+          </div>
+          <div class="p-2">
+            <button *ngIf="registro?.id" label="INSERIR IMAGENS" pButton pRipple type="button" icon="pi pi-fw pi-images"
+              (click)="imagesRegistro(registro!) "class="p-button-outlined text-black-alpha-90 ml-auto"></button>
+          </div>
+        </div>
+
+        <div class="border-1 surface-border border-round">
+          <span class="text-900 font-bold block border-bottom-1 surface-border p-3">INFORMAÇÕES</span>
+          <div class="p-3 flex flex-wrap gap-1">
+            <p-chip *ngIf="this.formGroup?.get('date')?.value"
+              styleClass="mr-2 py-2 px-3 text-900 font-bold surface-card border-1 surface-border"
+              [style]="{'border-radius':'20px'}">
+              <span class="mr-3">{{this.formGroup?.get('date')?.value | date : 'EEEE, d MMMM, y, h:mm:ss a zzzz' |
+                uppercase}}</span>
+            </p-chip>
+            <p-chip *ngFor="let tag of msocorrencia.value; let i = index;"
+              styleClass="mr-2 py-2 px-3 text-900 font-bold surface-card border-1 surface-border"
+              [style]="{'border-radius':'20px'}">
+              <span class="mr-3">{{tag.nome}}</span>
+              <span
+                class="chip-remove-icon flex align-items-center justify-content-center border-1 surface-border bg-gray-100 border-circle cursor-pointer"
+                (click)="onChipRemove(tag,msocorrencia, 'msocorrencia')">
+                <i class="pi pi-fw pi-times text-black-alpha-60"></i>
+              </span>
+            </p-chip>
+            <p-chip *ngFor="let tag of msunidade.value; let i = index;"
+              styleClass="mr-2 py-2 px-3 text-900 font-bold surface-card border-1 surface-border"
+              [style]="{'border-radius':'20px'}">
+              <span class="mr-3">{{tag.name}}</span>
+              <span
+                class="chip-remove-icon flex align-items-center justify-content-center border-1 surface-border bg-gray-100 border-circle cursor-pointer"
+                (click)="onChipRemove(tag,msunidade, 'msunidade')">
+                <i class="pi pi-fw pi-times text-black-alpha-60"></i>
+              </span>
+            </p-chip>
+            <p-chip *ngFor="let tag of msmunicipio.value; let i = index;"
+              styleClass="mr-2 py-2 px-3 text-900 font-bold surface-card border-1 surface-border"
+              [style]="{'border-radius':'20px'}">
+              <span class="mr-3">{{tag.name}}</span>
+              <span
+                class="chip-remove-icon flex align-items-center justify-content-center border-1 surface-border bg-gray-100 border-circle cursor-pointer"
+                (click)="onChipRemove(tag,msmunicipio, 'msmunicipio')">
+                <i class="pi pi-fw pi-times text-black-alpha-60"></i>
+              </span>
+            </p-chip>
+          </div>
+        </div>
+
+        <div *ngIf="msguarnicao.value" class="border-1 surface-border border-round">
+          <span class="text-900 font-bold block border-bottom-1 surface-border p-3">GUARNIÇÃO</span>
+          <div class="p-3 flex flex-wrap gap-1">
+            <p-chip *ngFor="let tag of msguarnicao.value; let i = index;"
+              styleClass="mr-1 py-1 px-2 text-900 font-bold surface-card border-1 surface-border"
+              [style]="{'border-radius':'10px'}">
+              <span class="mr-3">{{tag.nome}}</span>
+              <span
+                class="chip-remove-icon flex align-items-center justify-content-center border-1 surface-border bg-gray-100 border-circle cursor-pointer"
+                (click)="onChipRemove(tag, msguarnicao, 'msguarnicao')">
+                <i class="pi pi-fw pi-times text-black-alpha-60"></i>
+              </span>
+            </p-chip>
+          </div>
+        </div>
+
+        <div class="flex flex-column sm:flex-row justify-content-between align-items-center gap-3 py-2">
+          <button (click)="limpar()" pButton pRipple class="p-button-danger flex-1 p-button-outlined" label="LIMPAR"
+            icon="pi pi-fw pi-trash"></button>
+          <button [loading]="loading" (click)="save()" [disabled]="!this.formGroup?.valid" pButton pRipple
+            class="p-button-primary flex-1 border-round" label="SALVAR" icon="pi pi-fw pi-check"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

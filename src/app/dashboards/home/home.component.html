@@ -1,0 +1,63 @@
+<div class="grid" style="height: 80vh;">
+  <div class="col-12 md:col-12">
+    <p-toolbar>
+      <div class="p-toolbar-group-start">
+        <p-calendar [style]="{width: '15rem'}" [showTime]="false" [(ngModel)]="rangeDates" selectionMode="range"
+          [readonlyInput]="true" [showButtonBar]="true" (onClose)="onClose()" (onClearClick)="onClearClick()"
+          [minDate]="minDate" [maxDate]="maxDate" dateFormat="dd/mm/yy" [showIcon]="true">
+        </p-calendar>
+      </div>
+      <div class="p-toolbar-group-end">
+        <i *ngIf="!data" class="pi pi-spin pi-cog" style="font-size: 1.5rem"></i>
+        <p-button *ngIf="data" icon="pi pi-refresh" (onClick)="updateData(rangeDates!)" [loading]="(data) ? false : true" raised="true" severity="info"></p-button>
+      </div>
+    </p-toolbar>
+  </div>
+  <!--<div class="col-12 md:col-12">
+    <app-list-ranking></app-list-ranking>
+  </div>-->
+  <div class="col-12 md:col-3">
+    <app-graph-averiguacoes *ngIf="data" tipo="pie" [data]="data" title="ARMAS DE FOGO CASEIRA" [action]=8></app-graph-averiguacoes>
+  </div>
+  <div class="col-12 md:col-3">
+    <app-graph-averiguacoes *ngIf="data" tipo="pie" [data]="data" title="ARMAS DE FOGO INDUSTRIAL" [action]=9></app-graph-averiguacoes>
+  </div>
+
+  <div class="col-12 md:col-3">
+    <app-graph-averiguacoes *ngIf="data" tipo="pie" [data]="data" [action]=1 title="CASA DE SHOW'S AVERIGUADAS" ></app-graph-averiguacoes>
+  </div>
+  <div class="col-12 md:col-3">
+    <app-graph-averiguacoes *ngIf="data" tipo="pie" [data]="data" title="BARES AVERIGUADOS" [action]=2></app-graph-averiguacoes>
+  </div>
+  <div class="col-12 md:col-12">
+    <app-abordagens *ngIf="data" [data]="data" tipo="bar" [action]=1 title="ABORDAGENS" description="Total de abordagens considerando (Pessoas, Ciclistas, Motociclistas e Automóveis" ></app-abordagens>
+  </div>
+  <div class="col-12 md:col-4">
+    <app-abordagens *ngIf="data" [data]="data" tipo="bar" [action]=2 title="APREENSÕES" description="Total de motos recuperadas"></app-abordagens>
+  </div>
+  <div class="col-12 md:col-4">
+    <app-abordagens *ngIf="data" [data]="data" tipo="bar" [action]=3 title="APREENSÕES" description="Total de veículos 4 rodas recuperados"></app-abordagens>
+  </div>
+  <div class="col-12 md:col-4">
+    <app-abordagens s *ngIf="data" [data]="data" tipo="bar" [action]=4 title="FORAGIDOS RECAPTURADOS" description="Total de foragidos recapturados" ></app-abordagens >
+  </div>
+  <div class="col-12 md:col-4">
+    <app-abordagens *ngIf="data" [data]="data" tipo="bar" [action]=5 title="CUMPRIMENTO DE MANDADOS" description="Total de cumprimentos de mandados"></app-abordagens>
+  </div>
+  <div class="col-12 md:col-4">
+    <app-abordagens *ngIf="data" [data]="data" tipo="bar" [action]=6 title="FLAGRANTES" description="Total de flagrantes"></app-abordagens>
+  </div>
+  <div class="col-12 md:col-4">
+    <app-abordagens s *ngIf="data" [data]="data" tipo="bar" [action]=7 title="TCO" description="Total de TCO" ></app-abordagens >
+  </div>
+  <!--
+  <div class="col-12 md:col-3">
+    <app-graph-averiguacoes *ngIf="data" tipo="doughnut" [data]="data" title="VEÍCULOS 4 RODAS RECUPERADOS" [action]=4></app-graph-averiguacoes>
+  </div>
+  <div class="col-12 md:col-3">
+    <app-graph-averiguacoes *ngIf="data" tipo="doughnut" [data]="data" title="FORAGIDOS RECAPTURADOS" [action]=5></app-graph-averiguacoes>
+  </div>
+  <div class="col-12 md:col-3">
+    <app-graph-averiguacoes *ngIf="data" tipo="doughnut" [data]="data" title="MANDADOS CUMPRIDOS" [action]=6></app-graph-averiguacoes>
+  </div>-->
+</div>

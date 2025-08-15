@@ -1,0 +1,19 @@
+
+.background-red {
+  background: red;
+}
+
+.card-table-ranking-badge{
+  border-radius: var(--border-radius);
+  padding: 0.25em 0.5rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: .3px;}
+
+
+.card-table-ranking-badge.status-top {
+    background: green;
+    color: white;
+}
+

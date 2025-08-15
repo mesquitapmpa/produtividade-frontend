@@ -1,0 +1,141 @@
+<div class="card" style="margin: 1rem;">
+  <div class="grid grid-nogutter flex-wrap gap-3 p-fluid">
+    <div class="col-12 lg:col-4">
+      <div class="grid formgrid">
+        <div class="col-12 field">
+          <div *ngIf="fileUploads.length > 0" class="py-2">
+            <p-button type="button" icon="pi pi-arrow-left" (click)="prev()"
+              styleClass="p-button-primary mr-2"></p-button>
+            <p-button type="button" icon="pi pi-arrow-right" (click)="next()"
+              styleClass="p-button-primary mr-2"></p-button>
+            <p-button type="button" icon="pi pi-trash" (click)="isRemove()" styleClass="p-button-danger"></p-button>
+          </div>
+          <p-galleria *ngIf="fileUploads.length > 0" [value]="fileUploads" [responsiveOptions]="responsiveOptions"
+            [containerStyle]="{ 'max-width': '430px' }" [numVisible]="4" [(activeIndex)]="activeIndex">
+            <ng-template pTemplate="item" let-item>
+              <p-image [preview]="true" [src]="'https://produtividade.mesquitapmpa.com.br/'+item?.url" (onImageError)="handleMissingImage($event)" [alt]="item?.name" width="100%"></p-image>
+              <!--<img [src]="'https://vps49464.publiccloud.com.br/'+item?.url" (error)="handleMissingImage($event)" style="width: 100%; height: 100%;" />-->
+            </ng-template>
+            <ng-template pTemplate="thumbnail" let-item>
+              <div class="grid grid-nogutter justify-content-center">
+                <img [src]="'https://produtividade.mesquitapmpa.com.br/'+item?.url" style="height: 64px;" (error)="handleMissingImage($event)" />
+              </div>
+            </ng-template>
+            <!--<ng-template pTemplate="footer" let-item>
+            <div class="custom-galleria-footer">
+                <button type="button" pButton icon="pi pi-list" (click)="onThumbnailButtonClick()"></button>
+                <span *ngIf="fileUploads" class="title-container">
+                    <span>{{ activeIndex + 1 }}/{{ fileUploads.length }}</span>
+                    <span class="title">{{ fileUploads[activeIndex].name }}</span>
+                    <span>{{ fileUploads[activeIndex].filename }}</span>
+                </span>
+                <button type="button" pButton [icon]="fullScreenIcon()" (click)="toggleFullScreen()" class="fullscreen-button"></button>
+            </div>
+        </ng-template>-->
+          </p-galleria>
+
+          <div class="h-30rem overflow-y-auto py-3 border-round">
+            <div *ngIf="fileUploads.length == 0"
+              class="flex flex-column w-full h-full justify-content-center align-items-center">
+              <i class="pi pi-images text-4xl text-primary"></i>
+              <span class="block font-semibold text-900 text-lg mt-3">SEM IMAGENS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 lg:col-4">
+      <div class="grid formgrid">
+        <div class="col-12 field">
+          <span class="block text-900 font-bold text-xl mb-4">INSERIR IMAGENS</span>
+          <p-fileUpload #fileUploader name="images[]" [disabled]="progress > 0 && progress != 100"
+            (onUpload)="onUpload($event)" [customUpload]="true" (uploadHandler)="uploadfun($event)" [multiple]="true"
+            (onSelect)="onSelect($event)" accept="image/*" [showUploadButton]="true" [showCancelButton]="false"
+            [auto]="false" [maxFileSize]=5000000 styleClass="border-1 surface-border surface-card border-round">
+            <ng-template pTemplate="content">
+              <div class="h-20rem overflow-y-auto py-3 border-round" style="cursor: copy"
+                (click)="fileUploader.advancedFileInput.nativeElement.click()">
+                <div *ngIf="!images.length"
+                  class="flex flex-column w-full h-full justify-content-center align-items-center">
+                  <i class="pi pi-file text-4xl text-primary"></i>
+                  <span class="block font-semibold text-900 text-lg mt-3">SELECIONE IMAGENS</span>
+                </div>
+                <div class="flex flex-wrap gap-3 border-round" *ngIf="images.length">
+                  <div *ngFor="let file of images; let i = index;"
+                    class="h-full relative w-7rem h-7rem border-3 border-transparent border-round hover:bg-primary transition-duration-100 cursor-auto"
+                    (mouseenter)="onImageMouseOver(file)" (mouseleave)="onImageMouseLeave(file)" style="padding: 1px;">
+                    <img [src]="file.objectURL" class="w-full h-full border-round shadow-2" [alt]="file.name">
+                    <button *ngIf="progress == 0" [id]="file.name" #buttonEl pButton pRipple type="button"
+                      icon="pi pi-times"
+                      class="p-button-rounded p-button-primary text-sm absolute justify-content-center align-items-center cursor-pointer w-2rem h-2rem"
+                      style="top: -10px; right: -10px; display: none;"
+                      (click)="$event.stopPropagation(); removeImage(file)"></button>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </p-fileUpload>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1 w-full lg:w-4 xl:w-4 flex flex-column row-gap-3">
+
+
+      <div class="border-1 surface-border border-round">
+        <span class="text-900 font-bold block border-bottom-1 surface-border p-3">IMAGENS</span>
+        <div class="p-3">
+          <div *ngIf="!send" class="bg-gray-100 py-2 px-3 flex align-items-center border-round">
+            <span class="text-black-alpha-90 font-bold mr-3">STATUS: NÃO ENVIADO</span>
+          </div>
+          <div *ngIf="send" class="bg-green-700 py-2 px-3 flex align-items-center border-round">
+            <span class="text-white-alpha-90 font-bold mr-3">STATUS: ENVIADO</span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="selectedFiles?.length > 0" class="border-1 surface-border border-round">
+        <span class="text-900 font-bold block border-bottom-1 surface-border p-3">PROGRESSO</span>
+        <div class="p-3">
+          <p-progressBar #progressBarFileUpload [value]="progress" [showValue]="true"
+            [style]="{ height: '12px' }"></p-progressBar>
+          <div class="flex align-item-center justify-content-between">
+            <span class="text-900 mt-3 text-md font-medium">{{selectedFiles.length}} {{selectedFiles.length > 1 ?
+              'Imagens': 'Imagem'}}</span>
+            <span class="text-900 mt-3 text-md font-medium">{{formtSize(selectedFiles)}}</span>
+          </div>
+          <!--<div class="bg-gray-100 py-2 px-3 flex align-items-center border-round">
+
+                  <span class="text-black-alpha-60 font-semibold">{{product.status}}</span>
+                    <button pButton pRipple type="button" icon="pi pi-fw pi-pencil" class="p-button-rounded p-button-text text-black-alpha-60 ml-auto"></button>
+                </div>-->
+        </div>
+      </div>
+
+      <div class="flex flex-column sm:flex-row justify-content-between align-items-center gap-3 py-2">
+        <button *ngIf="progress > 0 && progress != 100" pButton pRipple class="p-button-danger flex-1 p-button-outlined"
+          (click)="cancel()" label="CANCELAR" icon="pi pi-fw pi-trash"></button>
+        <button [disabled]="selectedFiles?.length == 0 || (progress > 0 && progress != 100)" pButton pRipple
+          class="p-button-danger flex-1 p-button-outlined" (click)="limpar()" label="LIMPAR"
+          icon="pi pi-fw pi-trash"></button>
+        <button pButton pRipple class="p-button-primary flex-1 border-round" (click)="upload()" label="UPLOAD"
+          icon="pi pi-fw pi-check"></button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <p-dialog [(visible)]="deleteRegistroDialog" header="AVISO" [modal]="true" [style]="{width:'50vw'}">
+    <div class="flex align-items-center justify-content-left">
+      <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+      <span *ngIf="registro">{{EXCLUIR_TXT}}</span>
+    </div>
+    <ng-template pTemplate="footer">
+      <button style="background-color: blue; color: white;" pButton pRipple icon="pi pi-times" class="p-button-text"
+        label="NÃO" (click)="deleteRegistroDialog = false"></button>
+      <button [loading]="loadingDelete" style="background-color: red; color: white;" pButton pRipple icon="pi pi-check"
+        class="p-button-text" label="SIM" (click)="confirmDelete(); loadingDelete = true"></button>
+    </ng-template>
+  </p-dialog>
